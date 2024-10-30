@@ -1,0 +1,17 @@
+(defun single-window? ()
+  (= (count-windows) 1))
+
+(defun calculate-margin ()
+  (/ (- (frame-width) (current-fill-column)) 3))
+
+(defun auto-margin (window)
+  (if (single-window?)
+	  (set-window-margins window (calculate-margin))
+	(set-window-margins window 0)))
+
+(defun auto-margin-frame (frame)
+  (dolist (window (window-list frame))
+	(auto-margin window)))
+
+; (setq window-buffer-change-functions '(auto-margin-frame))
+
