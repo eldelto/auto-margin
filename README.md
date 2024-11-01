@@ -11,7 +11,7 @@ directly from source via ~use-package~ (requires Emacs >= 30.0):
 ```elisp
 (use-package auto-margin
   :vc (:url "https://github.com/eldelto/auto-margin"
-       :branch "main")
+            :branch "main")
   :ensure t)
 ```
 

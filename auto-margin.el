@@ -35,6 +35,7 @@
 	  (remove-hook 'window-buffer-change-functions 'auto-margin--frame)
 	  (auto-margin--reset-margin-frame nil))))
 
+;;;###autoload
 (define-minor-mode auto-margin-mode
   "Toggle auto-margin mode.
 Automatically adjusts set-widow-margins to center text when only
@@ -43,3 +44,8 @@ a single window is displayed."
   :lighter " Auto-Margin"
   :global t
   (auto-margin--toggle-mode))
+
+(provide 'auto-margin)
+
+;; TODO: When saving a file via magit the margins get set even though
+;; it is not a single window.
