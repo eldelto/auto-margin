@@ -11,8 +11,10 @@
   (/ (- (frame-width) (current-fill-column)) 3))
 
 (defun auto-margin--window (window)
+  ;; TODO: Move the single window check up as to not be redundant.
   (if (and (auto-margin--single-window? nil) (auto-margin--buffer? window))
-	  (set-window-margins window (auto-margin--calculate-margin))
+	  (let ((margin (auto-margin--calculate-margin)))
+		(set-window-margins window margin margin))
 	(set-window-margins window 0)))
 
 (defun auto-margin--reset-margin-frame (frame)
@@ -29,13 +31,15 @@
   (setq auto-margin--mode-enabled (not auto-margin--mode-enabled))
   (if auto-margin--mode-enabled
 	  (add-hook 'window-buffer-change-functions 'auto-margin--frame)
-	(progn	
+	(progn
 	  (remove-hook 'window-buffer-change-functions 'auto-margin--frame)
 	  (auto-margin--reset-margin-frame nil))))
 
 (define-minor-mode auto-margin-mode
   "Toggle auto-margin mode.
-...rest of documentation as before..."
- :init-value nil
- :lighter " Auto-Margin"
- (auto-margin--toggle-mode))
+Automatically adjusts set-widow-margins to center text when only
+a single window is displayed."
+  :init-value nil
+  :lighter " Auto-Margin"
+  :global t
+  (auto-margin--toggle-mode))
