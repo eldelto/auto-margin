@@ -1,4 +1,5 @@
 (defun auto-margin--buffer? (window)
+  ;; TODO: Try filtering by the window's height instead of the name.
   (not (string-match-p ".*Minibuf.*" (buffer-name (window-buffer window)))))
 
 (defun auto-margin--non-minibuffer-windows (frame)
@@ -11,8 +12,7 @@
   (/ (- (frame-width) (current-fill-column)) 3))
 
 (defun auto-margin--window (window)
-  ;; TODO: Move the single window check up as to not be redundant.
-  (if (and (auto-margin--single-window? nil) (auto-margin--buffer? window))
+  (if (auto-margin--buffer? window)
 	  (let ((margin (auto-margin--calculate-margin)))
 		(set-window-margins window margin margin))
 	(set-window-margins window 0)))
@@ -22,18 +22,23 @@
 	(set-window-margins window 0)))
 
 (defun auto-margin--frame (frame)
-  (dolist (window (window-list frame))
-	(auto-margin--window window)))
+  (if (auto-margin--single-window? frame)
+	  (dolist (window (window-list frame))
+		(auto-margin--window window))
+	(auto-margin--reset-margin-frame frame)))
 
 (defvar auto-margin--mode-enabled nil)
 
 (defun auto-margin--toggle-mode ()
   (setq auto-margin--mode-enabled (not auto-margin--mode-enabled))
   (if auto-margin--mode-enabled
-	  (add-hook 'window-buffer-change-functions 'auto-margin--frame)
+	  (progn
+		(add-hook 'window-buffer-change-functions 'auto-margin--frame)
+		(add-hook 'window-size-change-functions 'auto-margin--frame))
 	(progn
 	  (remove-hook 'window-buffer-change-functions 'auto-margin--frame)
-	  (auto-margin--reset-margin-frame nil))))
+	  (remove-hook 'window-size-change-functions 'auto-margin--frame))
+	(auto-margin--reset-margin-frame nil)))
 
 ;;;###autoload
 (define-minor-mode auto-margin-mode
@@ -46,6 +51,3 @@ a single window is displayed."
   (auto-margin--toggle-mode))
 
 (provide 'auto-margin)
-
-;; TODO: When saving a file via magit the margins get set even though
-;; it is not a single window.
