@@ -3,6 +3,8 @@
 A global minor-mode to automatically center text when using a single
 buffer.
 
+![Demo GIF](./media/demo.gif?raw=true "Demo GIF")
+
 ## Getting Started
 
 Auto-Margin is currently not available on MELPA but can be installed
