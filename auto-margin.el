@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 (defun auto-margin--buffer? (window)
   ;; TODO: Try filtering by the window's height instead of the name.
   (not (string-match-p ".*Minibuf.*" (buffer-name (window-buffer window)))))
