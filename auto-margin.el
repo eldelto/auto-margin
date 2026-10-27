@@ -1,7 +1,11 @@
-;; -*- lexical-binding: t; -*-
+;; -*- lexical-binding:t; -*-
 (defun auto-margin--buffer? (window)
   ;; TODO: Try filtering by the window's height instead of the name.
-  (not (string-match-p ".*Minibuf.*" (buffer-name (window-buffer window)))))
+  (message (buffer-name (window-buffer window)))
+  (not (or
+		(string-match-p ".*Minibuf.*"
+						(buffer-name (window-buffer window)))
+		(window-dedicated-p window))))
 
 (defun auto-margin--non-minibuffer-windows (frame)
   (seq-filter 'auto-margin--buffer? (window-list frame)))
